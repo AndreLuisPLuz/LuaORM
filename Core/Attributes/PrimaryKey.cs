@@ -11,9 +11,9 @@ namespace LuaORM.Core.Attributes
     {
         public GenerationStrategy Strategy { get; private set; }
 
-        public PrimaryKeyAttribute(GenerationStrategy? strategy)
+        public PrimaryKeyAttribute(GenerationStrategy strategy)
         {
-            Strategy = strategy ?? GenerationStrategy.AUTOGENERATE;
+            Strategy = strategy;
         }
     }
 }

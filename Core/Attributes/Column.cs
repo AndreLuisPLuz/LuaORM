@@ -8,7 +8,7 @@ namespace LuaORM.Core.Attributes
         public string? DbName { get; private set; }
         public DatabaseDefinition Definition { get; private set; }
 
-        public ColumnAttribute(string name, DbTypes type, int? size)
+        public ColumnAttribute(string name, DbTypes type, int size = 0)
         {
             DbName = name;
             Definition = new DatabaseDefinition

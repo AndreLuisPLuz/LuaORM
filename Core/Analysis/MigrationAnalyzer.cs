@@ -3,16 +3,32 @@ using LuaORM.Core.Attributes;
 
 namespace LuaORM.Core.Analysis
 {
-    public static class MigrationAnalyzer
+    public class MigrationAnalyzer
     {
-        private static readonly HashSet<MigrationEntity> _entities = new();
+        private static MigrationAnalyzer? analyzer;
+        private readonly HashSet<MigrationEntity> _entities = [];
 
-        public static void Analyze()
+        public IEnumerable<MigrationEntity> Entities => _entities;
+
+        private MigrationAnalyzer()
+        {
+            Analyze();
+        }
+
+        public static MigrationAnalyzer GetInstance()
+        {
+            analyzer ??= new();
+            return analyzer;
+        }
+
+        public void Analyze()
         {
             var entityClasses = AppDomain.CurrentDomain.GetAssemblies()
                     .SelectMany(a => a.GetTypes())
-                    .Where(t => t.GetCustomAttributes(false)
-                        .Contains(typeof(EntityAttribute)));
+                    .Where(t => t.GetCustomAttributes(true)
+                        .Any(a => a is EntityAttribute));
+
+            Console.WriteLine("Entity classes count: " + entityClasses.Count());
             
             if (entityClasses is null || !entityClasses.Any())
                 return;
@@ -33,7 +49,6 @@ namespace LuaORM.Core.Analysis
 
             foreach (var entity in _entities)
                 entity.Columns = FillColumns(entity);
-
         }
 
         private static HashSet<MigrationColumn> FillColumns(MigrationEntity entity)
